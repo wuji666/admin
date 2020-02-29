@@ -1,0 +1,57 @@
+{extend name='base' /}
+{block name='main'}
+<div class="layui-body">
+	<!-- 内容主体区域 -->
+	<div style="padding: 15px;">
+		<div class="layui-body">
+			<!--tab标签-->
+			<div class="layui-tab layui-tab-brief">
+				<div class="layui-tab-content">
+					{if check_auth('admin/menu/form')}
+					<button type="button" class="layui-btn form" data-url="{:url('menu/form', ['p_id' => $p_id])}">添加</button>
+					{/if}
+					<div class="layui-tab-item layui-show">
+						<table class="layui-table">
+							<thead>
+							<tr>
+								<th style="width: 30px;">ID</th>
+								<th style="width: 30px;">排序</th>
+								<th>菜单名称</th>
+								<th>控制器方法</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+							</thead>
+							<tbody>
+							{foreach $lists as $v}
+							<tr>
+								<td>{$v.id}</td>
+								<td>{$v.sort}</td>
+								<td>{$v.title}</td>
+								<td>{$v.name}</td>
+								<td>{php}echo $v['status']== 1 ? '显示' : '隐藏';{/php}</td>
+								<td>
+									{if check_auth('admin/menu/index')}
+									<a href="{:url('menu/index',['p_id'=>$v['id']])}"
+									   class="layui-btn layui-btn-xs">查看子菜单</a>
+									{/if}
+									{if check_auth('admin/menu/form')}
+									<a href="javascript:;" data-url="{:url('menu/form',['id'=>$v['id'], 'p_id' => $p_id])}"
+									   class="form layui-btn layui-btn-normal layui-btn-xs">编辑</a>
+									{/if}
+									{if check_auth('admin/menu/del')}
+									<a href="{:url('menu/del',['id'=>$v['id']])}"
+									   class="layui-btn layui-btn-danger layui-btn-xs ajax-delete">删除</a>
+									{/if}
+								</td>
+							</tr>
+							{/foreach}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

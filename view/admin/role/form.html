@@ -1,0 +1,144 @@
+{extend name='base' /}
+{block name='header'}
+{/block}
+{block name='menu'}
+{/block}
+{block name='main'}
+<div class="demo-class">
+	<!--tab标签-->
+	<div class="layui-tab layui-tab-brief">
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<form class="layui-form form-container" action="{:url('role/save')}" method="post">
+					<div class="layui-form-item">
+						<label class="layui-form-label">角色名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="name" value="{$info.name ?? ''}" required lay-verify="required"
+							       placeholder="请输入角色名称" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">选择权限</label>
+						<div class="layui-input-block">
+							<div id="test12" class="demo-tree-more"></div>
+						</div>
+					</div>
+					<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<input type="hidden" name="id" value="{$info.id ?? ''}">
+							<button class="layui-btn" id="submit" lay-demo="getChecked" type="button">保存</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name='footer'}
+{/block}
+{block name='script'}
+
+<script>
+	layui.use(['tree', 'util'], function () {
+		let tree = layui.tree,
+			util = layui.util
+			//模拟数据
+			, data = [
+				{foreach $menu_lists as $value}
+				{
+					title: "{$value['title']}",
+					id: "{$value['id']}",
+					spread: true,
+					{if isset($value['children'])}
+					children: [
+						{foreach $value['children'] as $val}
+						{
+							title: "{$val['title']}",
+							id: "{$val['id']}",
+							{if isset($val['children'])}
+							children: [
+								{foreach $val['children'] as $v}
+								{
+									title: "{$v['title']}",
+									id: "{$v['id']}",
+									checked: {if in_array($v['id'], $auth)}true{else}false{/if},
+								},
+							{/foreach}
+							]
+						{else}
+						checked : {if in_array($value['id'], $auth)}true{else}false{/if},
+						{/if}
+						},
+						{/foreach}
+					]
+					{else}
+					checked : {if in_array($value['id'], $auth)}true{else}false{/if},
+					{/if}
+				},
+				{/foreach}
+			];
+
+		//基本演示
+		tree.render({
+			elem: '#test12',
+			data: data,
+			showCheckbox: true,  //是否显示复选框
+			id: 'demoId1',
+		});
+		//按钮事件
+		$('#submit').click(function () {
+			util.event('lay-demo', {
+				getChecked: function (othis) {
+					let checkedData = tree.getChecked('demoId1'); //获取选中节点的数据
+					let role = [];
+					if (checkedData.length == 0) {
+						layer.msg('请选择权限');
+						return false;
+					}
+						for (let i in checkedData) {
+							role.push(checkedData[i].id);
+							if (checkedData[i].children) {
+								for (let j in checkedData[i].children) {
+									role.push(checkedData[i].children[j].id);
+									if (checkedData[i].children[j].children) {
+										for (let k in checkedData[i].children[j].children) {
+											role.push(checkedData[i].children[j].children[k].id);
+										}
+									}
+								}
+							}
+						}
+					let name = $('input[name=name]').val();
+					if (!name) {
+						layer.msg('请填写角色名称');
+						return false;
+					}
+					$.ajax({
+						type : 'post',
+						url : '{:url("role/save")}',
+						data : {
+							name : $('input[name=name]').val(),
+							role : role,
+							id : $('input[name=id]').val()
+						},
+						dataType : 'json',
+						success : function (res) {
+							if (res.code == 1) {
+								setTimeout(function () {
+									parent.layer.close(parent.layer.getFrameIndex(window.name));
+									window.location.reload();
+								}, 1000);
+								layer.msg(res.msg);
+							}
+						}
+					})
+				},
+			});
+
+		})
+	});
+</script>
+{/block}

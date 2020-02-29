@@ -1,0 +1,53 @@
+{extend name='base' /}
+{block name='header'}
+{/block}
+{block name='menu'}
+{/block}
+{block name='main'}
+<div class="demo-class">
+	<!--tab标签-->
+	<div class="layui-tab layui-tab-brief">
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<form class="layui-form form-container" action="{:url('menu/save')}" method="post">
+					<div class="layui-form-item">
+						<label class="layui-form-label">菜单名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="title" value="{$info.title ?? ''}" required  lay-verify="required" placeholder="请输入菜单名称" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">控制器方法</label>
+						<div class="layui-input-block">
+							<input type="text" name="name" value="{$info.name ?? ''}" required  lay-verify="required" placeholder="请输入控制器方法 如：admin/Index/index" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-block">
+							<input type="radio" name="status" value="1" checked title="显示" {if isset($info.status) && $info.status == 1} checked="checked"{/if}>
+							<input type="radio" name="status" value="0" title="隐藏" {if isset($info.status) && $info.status == 0} checked="checked"{/if}>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">排序</label>
+						<div class="layui-input-block">
+							<input type="text" name="sort" value="{$info.sort ?? ''}" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<input type="hidden" name="id" value="{$info.id ?? ''}">
+							<input type="hidden" name="p_id" value="{$p_id ?? 0}">
+							<button class="layui-btn" lay-submit lay-filter="*">保存</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name='footer'}
+{/block}

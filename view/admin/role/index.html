@@ -1,0 +1,52 @@
+{extend name='base' /}
+{block name='main'}
+<div class="layui-body">
+	<!-- 内容主体区域 -->
+	<div style="padding: 15px;">
+		<div class="layui-body">
+			<!--tab标签-->
+			<div class="layui-tab layui-tab-brief">
+				<div class="layui-tab-content">
+					{if check_auth('admin/role/form')}
+					<button type="button" class="layui-btn form" data-url="{:url('role/form')}">添加</button>
+					{/if}
+					<div class="layui-tab-item layui-show">
+						<table class="layui-table">
+							<thead>
+							<tr>
+								<th style="width: 30px;">ID</th>
+								<th>角色名称</th>
+								<th>创建时间</th>
+								<th>更新时间</th>
+								<th>操作</th>
+							</tr>
+							</thead>
+							<tbody>
+							{foreach $lists as $v}
+							<tr>
+								<td>{$v.id}</td>
+								<td>{$v.name}</td>
+								<td>{$v.create_time}</td>
+								<td>{$v.update_time}</td>
+								<td>
+									{if check_auth('admin/role/form')}
+									<a href="javascript:;" data-url="{:url('role/form',['id'=>$v['id']])}"
+									   class="form layui-btn layui-btn-xs">编辑</a>
+									{/if}
+									{if check_auth('admin/role/del')}
+									<a href="{:url('role/del',['id'=>$v['id']])}"
+									   class="layui-btn layui-btn-danger layui-btn-xs ajax-delete">删除</a>
+									{/if}
+								</td>
+							</tr>
+							{/foreach}
+							</tbody>
+						</table>
+						{$lists|raw}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

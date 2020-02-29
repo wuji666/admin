@@ -1,0 +1,130 @@
+{extend name='base' /}
+{block name='main'}
+<div class="layui-body">
+	<!-- 内容主体区域 -->
+	<div style="padding: 15px;">
+		<div class="layui-body">
+			<!--tab标签-->
+			<div class="layui-tab layui-tab-brief">
+				<div class="layui-tab-content">
+					{if check_auth('admin/device/form')}
+					<button type="button" class="layui-btn form" data-url="{:url('device/form')}">添加</button>
+					{/if}
+					{if check_auth('admin/device/reload')}
+					<button type="button" class="layui-btn" id="reload">刷新设备状态</button>
+					{/if}
+					<div class="layui-tab-item layui-show">
+						<table class="layui-table">
+							<thead>
+							<tr>
+								<th style="width: 30px;">ID</th>
+								<th>用户名</th>
+								<th>设备ID</th>
+								<th>接入协议</th>
+								<th>状态</th>
+								<th>鉴权信息</th>
+								<th>设备名</th>
+								<th>设备描述</th>
+								<th>设备标签</th>
+								<th>坐标信息</th>
+								<th>自定义信息</th>
+								<th>创建时间</th>
+								<th>更新时间</th>
+								<th>操作</th>
+							</tr>
+							</thead>
+							<tbody>
+							{foreach $lists as $v}
+							<tr>
+								<td>{$v.id}</td>
+								<td>
+									<select name="user_id" class="user_id">
+										<option value="0">请选择用户</option>
+										{foreach $user as $val}
+										<option value="{$val.id}" {if $val.id == $v.user_id}selected{/if}>{$val.username}</option>
+										{/foreach}
+									</select>
+								</td>
+								<td class="device_id">{$v.device_id}</td>
+								<td>{$v.protocol}</td>
+								<td>
+									{if $v.online == 1}离线{/if}
+									{if $v.online == 2}在线{/if}
+								</td>
+								<td>{$v.auth_info}</td>
+								<td>{$v.title}</td>
+								<td>{$v.desc}</td>
+								<td>{$v.tags}</td>
+								<td>{$v.location}</td>
+								<td>{$v.other}</td>
+								<td>{$v.create_time}</td>
+								<td>{$v.update_time}</td>
+								<td>
+									{if check_auth('admin/device/form')}
+									<a href="javascript:;" data-url="{:url('device/form',['id'=>$v['id']])}"
+									   class="form layui-btn layui-btn-xs">编辑</a>
+									{/if}
+									{if check_auth('admin/device/del')}
+									<a href="{:url('device/del',['id'=>$v['device_id']])}"
+									   class="layui-btn layui-btn-danger layui-btn-xs ajax-delete">删除</a>
+									{/if}
+								</td>
+							</tr>
+							{/foreach}
+							</tbody>
+						</table>
+						{$lists|raw}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name='script'}
+<script>
+	$('#reload').click(function () {
+		let device = $('.device_id');
+		let device_id = [];
+		$.each(device, function () {
+			device_id.push(this.innerHTML);
+		});
+		$.ajax({
+			url : '{:url("device/reload")}',
+			type : 'post',
+			data : {device_id : device_id},
+			dataType : 'json',
+			success : function (res) {
+				if (res.code == 1) {
+					location.reload();
+					layer.msg(res.msg);
+				} else {
+					layer.msg(res.msg);
+				}
+			}
+		})
+	});
+	$('.user_id').change(function () {
+		let user_id = $(this).val();
+		let id = $(this).parents('tr').children().eq(0).html();
+		if (!user_id) {
+			layer.msg('请选择用户');
+			return false;
+		}
+		$.ajax({
+			type : 'post',
+			url : '{:url("device/distribution")}',
+			data : {user_id : user_id, id : id},
+			dataType : 'json',
+			success : function (res) {
+				if (res.code == 1) {
+					location.reload();
+					layer.msg(res.msg);
+				} else {
+					layer.msg(res.msg);
+				}
+			}
+		})
+	})
+</script>
+{/block}

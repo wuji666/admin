@@ -1,0 +1,93 @@
+{extend name='base' /}
+{block name='header'}
+{/block}
+{block name='menu'}
+{/block}
+{block name='main'}
+<div class="demo-class">
+	<!--tab标签-->
+	<div class="layui-tab layui-tab-brief">
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<form class="layui-form form-container" action="{:url('device/save')}" method="post">
+					<div class="layui-form-item">
+						<label class="layui-form-label">接入协议</label>
+						<div class="layui-input-block">
+							<input type="text" name="protocol" value="{$info.protocol ?? ''}" required
+							       lay-verify="required" {if !empty($info)}disabled{/if}
+							       placeholder="请输入接入协议" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-block">
+							<select name="online" {if !empty($info)}disabled{/if}>
+								<option value="1">离线</option>
+								<option value="2">在线</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">鉴权信息(如果修改必改鉴权信息)</label>
+						<div class="layui-input-block">
+							<input type="text" name="auth_info" value="{$info.auth_info ?? ''}" required
+							       lay-verify="required"
+							       placeholder="请输入鉴权信息" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">设备名</label>
+						<div class="layui-input-block">
+							<input type="text" name="title" value="{$info.title ?? ''}" required lay-verify="required"
+							       placeholder="请输入设备名" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">设备描述</label>
+						<div class="layui-input-block">
+							<input type="text" name="desc" value="{$info.desc ?? ''}" required lay-verify="required"
+							       placeholder="请输入设备描述" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">设备标签</label>
+						<div class="layui-input-block">
+							<input type="text" name="tags" value="{$info.tags ?? ''}" required lay-verify="required"
+							       placeholder="请输入设备标签(以英文逗号隔开)" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">坐标信息</label>
+						<div class="layui-input-block">
+							<input type="text" name="location" value="{$info.location ?? ''}" required
+							       lay-verify="required"
+							       placeholder="请输入坐标信息" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">自定义信息</label>
+						<div class="layui-input-block">
+							<input type="text" name="other" value="{$info.other ?? ''}" required lay-verify="required"
+							       placeholder="请输入自定义信息(以英文逗号隔开)" class="layui-input">
+						</div>
+					</div>
+
+					<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<input type="hidden" name="id" value="{$info.id ?? ''}">
+							<input type="hidden" name="device_id" value="{$info.device_id ?? ''}">
+							<button class="layui-btn" lay-submit lay-filter="*">保存</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name='footer'}
+{/block}
+{block name='script'}
+{/block}
