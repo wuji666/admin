@@ -1,4 +1,4 @@
-![Image text](https://gitee.com/wuji666/admin-tp6/blob/master/public/static/admin/img/example1.jpg)
+![image](https://gitee.com/wuji666/admin-tp6/blob/master/public/static/admin/img/example1.jpg)
 
 ThinkPHP 6.0
 ===============
